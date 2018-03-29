@@ -12,6 +12,7 @@ module.exports = function (app) {
         res.send({ hi: 'there' });
     });
     app.post('/food', Fatsecret.search);
+    app.post('/details', Fatsecret.getRecipeDetails);    
     app.post('/signin', requireSignin, Authentication.signin);
     app.post('/signup', Authentication.signup);
 }

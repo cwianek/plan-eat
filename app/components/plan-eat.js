@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { signupUser, loginUser, restoreSession } from '../store/session/actions';
 
-import Dashboard from './dashboard'
+import Tabs from './dashboard/tabs';
 
 class PlanEat extends Component {
     constructor(props) {
@@ -21,7 +21,7 @@ class PlanEat extends Component {
         if (this.props.user && this.props.user.token) {
             return (
                 <View style={{ flex: 1, width: '100%' }}>
-                    <Dashboard />
+                    <Tabs />
                 </View>
             )
         } else {

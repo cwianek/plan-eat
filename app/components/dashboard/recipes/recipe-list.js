@@ -1,30 +1,41 @@
 import React from 'react';
-import { Text, View, ImageBackground, TouchableOpacity } from 'react-native';
+import { Text, View, Image, TouchableOpacity } from 'react-native';
 import { Card } from 'react-native-elements';
-import { RECIPE_ALT, RECIPE_ALT2 } from '../../dimensions';
+import { RECIPE_ALT, RECIPE_ALT2, SCREEN_WIDTH } from '../../dimensions';
 import { Button, Input } from 'react-native-elements';
-export default class RecipeList extends React.Component {
+import { TEXT_COLOR, SECOND_COLOR } from '../../colors';
+import StarRating from 'react-native-star-rating';
 
-    listItemPress(friend) {
-        this.props.navigation.navigate('Messages', { friend })
-    }
+export default class RecipeList extends React.Component {
 
     render() {
         return (
             <View style={styles.container}>
                 {
                     this.props.recipesList.map((l, i) => (
-                        <Card containerStyle={styles.containerCard} >
-                            <TouchableOpacity onPress={() => this.props.recipePress(l)}>
-                                <ImageBackground source={l.recipe_image ? { uri: l.recipe_image } : RECIPE_ALT} style={styles.bgImage}>
-                                    <View style={styles.wrapper}>
-                                        <Text style={styles.recipeTitle}>{l.recipe_name}</Text>
-                                    </View>
-                                </ImageBackground>
-                            </TouchableOpacity>
+                        <Card
+                            key={l.recipe_id}
+                            containerStyle={styles.containerCard}>
+                                <TouchableOpacity onPress={() => this.props.recipePress(l)}>
+                                    <Image source={l.recipe_image ? { uri: l.recipe_image } : RECIPE_ALT} style={styles.bgImage} />
+                                    <Text style={styles.recipeTitle}>{l.recipe_name}</Text>
+                                    <Text style={styles.recipeDescription}>{l.recipe_description}</Text>
+                                    <StarRating
+                                        containerStyle={styles.stars}
+                                        disabled={false}
+                                        emptyStar={'ios-star-outline'}
+                                        fullStar={'ios-star'}
+                                        halfStar={'ios-star-half'}
+                                        iconSet={'Ionicons'}
+                                        maxStars={5}
+                                        rating={4}
+                                        starSize={10}
+                                        fullStarColor={SECOND_COLOR}
+                                    />
+                                </TouchableOpacity>
                         </Card>
-                    ))
-                }
+    ))
+}
             </View>
         )
     }
@@ -35,32 +46,43 @@ styles = {
         flexDirection: 'row',
         display: 'flex',
         flexWrap: 'wrap',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
         flex: 1,
+        marginLeft: 25,
+        marginRight: 25,
     },
     containerCard: {
-        width: 150,
-        height: 150,
+        alignItems: 'center',
+        elevation: 0,
         padding: 0,
-        borderColor: 'black',
+        margin: 0,
+        borderWidth: 0,
+        width: SCREEN_WIDTH / 2 - 30,
+        minHeight: 200,
+        paddingBottom: 10,
+
     }, bgImage: {
-        width: 150,
-        height: 150,
+        borderRadius: 8,
+        width: SCREEN_WIDTH / 2 - 25,
+        height: 90,
     },
     wrapper: {
-        position: 'relative',
         alignItems: 'center',
-        backgroundColor: 'rgba(25,25,25,0.6)',
         flex: 1
     }, recipeTitle: {
-        padding: 10,
-        color: 'white',
-        fontSize: 16,
-        fontFamily: 'light'
-    }, recipeDesc: {
-        padding: 10,
-        color: 'rgb(150,150,150)',
+        paddingTop: 5,
+        marginLeft: 2,
+        color: TEXT_COLOR,
         fontSize: 14,
+        fontWeight: 'bold',
         fontFamily: 'light'
+    }, recipeDescription: {
+        marginLeft: 2,
+        color: TEXT_COLOR,
+        fontSize: 13,
+        fontFamily: 'light'
+    }, stars: {
+        marginLeft: 2,
+        width: 50
     }
 }

@@ -9,3 +9,4 @@ export const BUTTON_SIZE = 50;
 export const BG_IMAGE = require('../assets/images/bg12.jpg');
 export const RECIPE_ALT = require('../assets/images/recipe-alt.jpg');
 export const RECIPE_ALT2 = require('../assets/images/recipe-alt2.jpg');
+

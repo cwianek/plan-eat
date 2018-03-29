@@ -8,11 +8,10 @@ function tokenForUser(user) {
 }
 
 exports.signin = function (req, res, next) {
-    res.send({ token: tokenForUser((req.body.user)) });
+    res.send({ token: tokenForUser((req.body.email)) });
 }
 
 exports.signup = function (req, res, next) {
-    console.log('heeej!');
     const email = req.body.email;
     const password = req.body.password;
 

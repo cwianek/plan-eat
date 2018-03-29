@@ -1,5 +1,6 @@
 import * as types from './actionTypes'
 import axios from 'axios';
+import { AsyncStorage } from 'react-native';
 import ROOT_URL from '../../config/endpoint';
 
 export const signupUser = (email, password) => {
@@ -10,9 +11,9 @@ export const signupUser = (email, password) => {
             password
         })
             .then(function (response) {
-                console.log(response);
                 const { token } = response.data;
                 dispatch(sessionSuccess({ email, token }));
+                saveToStorage(email, token);
             })
             .catch(function (error) {
                 console.log(error);
@@ -25,20 +26,20 @@ export const logoutUser = () => {
     return (dispatch) => {
         dispatch(sessionLoading())
         dispatch(sessionLogout());
+        resetStorage();
     }
 }
 
 export const loginUser = (email, password) => {
     return (dispatch) => {
-        console.log(email, password);
         dispatch(sessionLoading())
         axios.post(`${ROOT_URL}/signin`, {
             email,
             password
         })
             .then(function (response) {
-                console.log("response from login", response.data);
                 const { token } = response.data;
+                saveToStorage(email, token);
                 dispatch(sessionSuccess({ email, token }));
             })
             .catch(function (error) {
@@ -49,8 +50,37 @@ export const loginUser = (email, password) => {
 }
 
 export const restoreSession = () => {
-    return (dispatch) => {
-        dispatch(sessionSuccess({ mail: "mail@gmail.com",token: 123412 }));
+    return async function (dispatch) {
+        const credentials = await loadFromStorage();
+        dispatch(sessionSuccess(credentials))
+    }
+}
+
+async function saveToStorage(email, token, dispatch) {
+    try {
+        await AsyncStorage.setItem("token", token);
+        await AsyncStorage.setItem("email", email);
+    } catch (error) {
+        console.log("Error saving data" + error);
+    }
+}
+
+async function resetStorage() {
+    try {
+        await AsyncStorage.removeItem('email');
+        await AsyncStorage.removeItem('token');
+    } catch (error) {
+        console.log("Error reseting data" + error);
+    }
+}
+
+async function loadFromStorage(dispatch) {
+    try {
+        const email = await AsyncStorage.getItem('email');
+        const token = await AsyncStorage.getItem('token');
+        return { token, email }
+    } catch (error) {
+        console.log("Error retrieving data" + error);
     }
 }
 

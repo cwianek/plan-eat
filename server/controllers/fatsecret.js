@@ -3,12 +3,7 @@ const SECRET = '096de1d4e0964d64aba474436992b9af'
 const fatAPI = new (require('fatsecret'))(FAT_SECRET_KEY, SECRET);
 var imagefinder = require('imagefinder')
 
-function applyImage(recipe) {
-
-}
-
 exports.search = function (req, res, next) {
-    console.log("Search");
     fatAPI
         .method('recipes.search', {
             search_expression: req.body.name,
@@ -21,16 +16,18 @@ exports.search = function (req, res, next) {
             } else if (result.recipes.total_results > 1) {
                 recipes.push(...result.recipes.recipe);
             }
-            var promises = [];
-            for (var i = 0; i < recipes.length; i++) {
-                var promise = applyImage(recipes[i]);
-                promises.push(promise);
-            }
-            console.log(result.recipes.recipe)
-            Promise.all(promises).then(function () {
-                res.send(recipes);
-
-            })
+            res.send(recipes);
         })
         .catch(err => next(err));
+}
+
+exports.getRecipeDetails = function (req, res, next) {
+    fatAPI
+        .method('recipe.get', {
+            recipe_id: req.body.id
+        })
+        .then(function (result) {
+            console.log(result.recipe)
+            res.send(result.recipe);
+        })
 }

@@ -9,7 +9,7 @@ import RecipesSearch from './recipes-search';
 import LogoutButton from './logout-button';
 
 const MIN_HEIGHT = 100;
-const MAX_HEIGHT = 250;
+const MAX_HEIGHT = 200;
 
 class AnimatedListWrapper extends Component {
     constructor() {
@@ -44,7 +44,6 @@ class AnimatedListWrapper extends Component {
                         nativeEvent:
                             { contentOffset: { y: this.state.scrollY } }
                     }])}
-                    scrollViewBackgroundColor='rgb(20,20,20)'
                     //renderHeader={() => <View style={{ backgroundColor: 'rgba(35,35,35,1)', flex: 1 }}><Image source={BG_IMAGE} style={styles.image} /></View>}
                     renderFixedForeground={() => (
                         <Animatable.View

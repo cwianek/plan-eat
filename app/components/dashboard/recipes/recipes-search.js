@@ -4,7 +4,7 @@ import { Button, Input } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome'
 import axios from 'axios';
 import { debounce } from '../../utils';
-
+import {TEXT_COLOR, SECOND_COLOR} from '../../colors';
 
 class RecipesSearch extends React.Component {
     constructor(props) {
@@ -30,7 +30,7 @@ class RecipesSearch extends React.Component {
                 width={230}
                 icon={<Icon
                     name='search'
-                    color='rgba(171, 189, 219, 1)'
+                    color={TEXT_COLOR}
                     size={25} />}
                 onChangeText={
                     text => {
@@ -38,17 +38,20 @@ class RecipesSearch extends React.Component {
                     }
                 }
                 value={this.props.text}
-                inputStyle={[{ marginLeft: 10, color: 'white' }]}
+                inputStyle={{ marginLeft: 10, color: TEXT_COLOR }}
                 containerStyle={version ? { borderBottomWidth: 0 } : {}}
                 keyboardAppearance="light"
                 placeholder="Recipe"
                 autoFocus={false}
                 autoCapitalize="none"
                 autoCorrect={false}
-                returnKeyType="next"
+                returnKeyType="search"
+                onSubmitEditing={() => {
+                    this.props.searchRecipes(this.props.text);
+                }}
                 ref={input => this.emailInput = input}
                 blurOnSubmit={false}
-                placeholderTextColor="white"
+                placeholderTextColor={TEXT_COLOR}
                 errorStyle={{ textAlign: 'center', fontSize: 12 }}
             />
         )
@@ -66,7 +69,7 @@ const styles = {
         marginTop: 20,
         width: 120,
         height: 40,
-        borderColor: 'rgba(255, 255, 255, 0.5)',
+        borderColor: TEXT_COLOR,
         borderWidth: 2,
         borderRadius: 30,
         elevation: 3,

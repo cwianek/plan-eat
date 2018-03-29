@@ -4,6 +4,7 @@ import { Button, Input } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome'
 import axios from 'axios';
 import ROOT_URL from '../../../config/endpoint';
+import {TEXT_COLOR} from '../../colors';
 
 class HeaderForm extends React.Component {
 
@@ -39,7 +40,7 @@ const styles = {
     },
     buttonText: {
         fontWeight: 'bold',
-        color: 'white'
+        color: TEXT_COLOR
     }
 }
 
