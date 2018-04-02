@@ -6,13 +6,17 @@ import EntypoIcons from 'react-native-vector-icons/Entypo'
 import TabNavigator from 'react-native-tab-navigator';
 import RecipesNavigator from './recipes/recipes-navigator';
 import { SECOND_COLOR, TEXT_COLOR } from '../colors';
-import  ProductsList  from './products/products-list';
+import ProductsList from './products/products-list';
 
 class Tabs extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = { selected: 'recipes' }
+    }
+
+    componentDidMount() {
+        this.props.loadUserProducts();
     }
 
     render() {
