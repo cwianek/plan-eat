@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Image, TouchableOpacity } from 'react-native';
+import { Text, View, Image, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native';
 import { Card } from 'react-native-elements';
 import { RECIPE_ALT, RECIPE_ALT2, SCREEN_WIDTH } from '../../dimensions';
 import { Button, Input } from 'react-native-elements';
@@ -10,12 +10,17 @@ export default class RecipeList extends React.Component {
 
     render() {
         return (
-            <View style={styles.container}>
-                {
-                    this.props.recipesList.map((l, i) => (
-                        <Card
-                            key={l.recipe_id}
-                            containerStyle={styles.containerCard}>
+            this.props.recipeListLoading ?
+                <View style={{ flex: 1, justifyContent: 'center' }}>
+                    <ActivityIndicator size="large" color={SECOND_COLOR} />
+                </View>
+                :
+                <ScrollView contentContainerStyle={styles.container}>
+                    {
+                        this.props.recipesList.map((l, i) => (
+                            <Card
+                                key={l.recipe_id}
+                                containerStyle={styles.containerCard}>
                                 <TouchableOpacity onPress={() => this.props.recipePress(l)}>
                                     <Image source={l.recipe_image ? { uri: l.recipe_image } : RECIPE_ALT} style={styles.bgImage} />
                                     <Text style={styles.recipeTitle}>{l.recipe_name}</Text>
@@ -33,23 +38,23 @@ export default class RecipeList extends React.Component {
                                         fullStarColor={SECOND_COLOR}
                                     />
                                 </TouchableOpacity>
-                        </Card>
-    ))
-}
-            </View>
+                            </Card>
+                        ))
+                    }
+                </ScrollView>
         )
     }
 }
 
 styles = {
     container: {
+        backgroundColor: 'white',
         flexDirection: 'row',
         display: 'flex',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
-        flex: 1,
-        marginLeft: 25,
-        marginRight: 25,
+        paddingLeft: 25,
+        paddingRight: 25,
     },
     containerCard: {
         alignItems: 'center',
@@ -57,9 +62,10 @@ styles = {
         padding: 0,
         margin: 0,
         borderWidth: 0,
+        borderRadius: 5,
         width: SCREEN_WIDTH / 2 - 30,
         minHeight: 200,
-        paddingBottom: 10,
+        marginBottom: 10,
 
     }, bgImage: {
         borderRadius: 8,

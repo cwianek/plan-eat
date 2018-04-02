@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, Image, View, ScrollView, Animated } from 'react-native';
+import { Text, Image, View, ScrollView, Animated, ActivityIndicator } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 import { RECIPE_ALT, SCREEN_WIDTH } from '../../dimensions';
 import { connect } from 'react-redux';
@@ -8,7 +8,6 @@ import { getRecipeDetails } from '../../../store/recipes/actions'
 import Modal from "react-native-modal";
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { TEXT_COLOR, SECOND_COLOR } from '../../colors'
-import Header from './header'
 import TabNavigator from 'react-native-tab-navigator';
 import StarRating from 'react-native-star-rating';
 
@@ -46,9 +45,11 @@ class RecipeDetails extends React.Component {
 
                         <View style={styles.recipeTypesContainer}>
                             {
-                                recipe.recipe_types.recipe_type.map((type, index) => (
-                                    <Text key={index} style={styles.recipeType}>{type}</Text>
-                                ))
+                                Array.isArray(recipe.recipe_types.recipe_type) ?
+                                    recipe.recipe_types.recipe_type.map((type, index) => (
+                                        <Text key={index} style={styles.recipeType}>{type}</Text>
+                                    ))
+                                    : <Text style={styles.recipeType}>{recipe.recipe_types.recipe_type}</Text>
                             }
 
                         </View>
@@ -69,12 +70,16 @@ class RecipeDetails extends React.Component {
                                     fullStarColor={SECOND_COLOR}
                                 />
                             </View>
-                            <View style={styles.timeContainer}>
-                                <Ionicons
-                                    name='ios-time-outline'
-                                    size={20} />
-                                <Text style={styles.timeText}>{recipe.cooking_time_min}min</Text>
-                            </View>
+                            {
+                                recipe.cooking_time_min ?
+                                    <View style={styles.timeContainer}>
+                                        <Ionicons
+                                            name='ios-time-outline'
+                                            size={20} />
+                                        <Text style={styles.timeText}>{recipe.cooking_time_min}min</Text>
+                                    </View>
+                                    : null
+                            }
                         </View>
 
 
@@ -83,7 +88,10 @@ class RecipeDetails extends React.Component {
                         <View style={styles.ingredientsContainer}>
                             {
                                 recipe.ingredients.ingredient.map((ingredient, index) => (
-                                    <Text key={index} style={styles.ingredient}>{ingredient.food_name}</Text>
+                                    this.props.userProducts.filter(product => (product.food_id === ingredient.food_id || product.food_name === ingredient.food_name)).length > 0 ?
+                                        <Text key={index} style={[styles.ingredient, styles.ownedIngredient]}>{`${ingredient.food_name}`}</Text>
+                                        :
+                                        <Text key={index} style={styles.ingredient}>{`${ingredient.food_name}`}</Text>
                                 ))
                             }
                         </View>
@@ -93,15 +101,15 @@ class RecipeDetails extends React.Component {
                         <View style={styles.servingContainer}>
                             {
                                 servingsToDisplay.map((value, index) => (
-                                    <Text key={index} style={styles.ingredient}>{value}: {recipe.serving_sizes.serving[value]}</Text>
+                                    <Text key={index} style={styles.serving}>{value}: {recipe.serving_sizes.serving[value]}</Text>
                                 ))
                             }
                         </View>
                         <Button
                             clear
                             containerStyle={styles.showMoreContainer}
-                            textStyle={styles.showMore}
-                            text={this.state.fullServings ? "hide" : "show more" }
+                            titleStyle={styles.showMore}
+                            title={this.state.fullServings ? "hide" : "show more"}
                             onPress={() => { this.setState({ fullServings: !this.state.fullServings }) }}>
                         </Button>
 
@@ -118,7 +126,10 @@ class RecipeDetails extends React.Component {
                 </ScrollView>
             )
         } else {
-            return null
+            return (
+                <View style={{ flex: 1, justifyContent: 'center' }}>
+                    <ActivityIndicator size="large" color={SECOND_COLOR} />
+                </View>)
         }
     }
 }
@@ -140,6 +151,7 @@ const styles = {
         zIndex: 1,
         width: SCREEN_WIDTH,
         height: 250,
+        flex: 1,
         backgroundColor: 'transparent'
     },
     title: {
@@ -182,6 +194,19 @@ const styles = {
         paddingLeft: 15,
         marginBottom: 15,
     }, ingredient: {
+        backgroundColor: '#DDDDDD',
+        borderRadius: 5,
+        color: TEXT_COLOR,
+        fontFamily: 'light',
+        fontSize: 14,
+        margin: 2,
+        padding: 4
+    },
+    ownedIngredient: {
+        backgroundColor: 'green',
+        color: 'white'
+    },
+    serving: {
         color: TEXT_COLOR,
         fontFamily: 'light',
         fontSize: 14,
@@ -233,7 +258,8 @@ const styles = {
 }
 
 const mapStateToProps = state => ({
-    recipe: state.recipes.currentRecipe
+    recipe: state.recipes.currentRecipe,
+    userProducts: state.products.userProducts
 })
 
 function mapDispatchToProps(dispatch) {

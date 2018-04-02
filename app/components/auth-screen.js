@@ -30,13 +30,14 @@ class AuthScreen extends Component {
     };
   }
 
-  componentDidMount() {
-    Font.loadAsync({
+  async componentDidMount() {
+    await Font.loadAsync({
       'georgia': require('../assets/fonts/Georgia.ttf'),
       'regular': require('../assets/fonts/Montserrat-Regular.ttf'),
       'light': require('../assets/fonts/Montserrat-Light.ttf'),
       'bold': require('../assets/fonts/Montserrat-Bold.ttf'),
-    }).then(this.setState({ fontLoaded: true }))
+    })
+    this.setState({ fontLoaded: true })
   }
 
   validateEmail(email) {
@@ -151,16 +152,16 @@ class AuthScreen extends Component {
                 {this.state.loginAdditionalText}
               </Text>
               <Button
-                text={this.state.accounButtonText}
+                title={this.state.accounButtonText}
                 clear
                 activeOpacity={0.5}
-                textStyle={{ color: TEXT_COLOR, fontSize: 15 }}
+                titleStyle={{ color: TEXT_COLOR, fontSize: 15 }}
                 onPress={this.accountButtonPress.bind(this)}
               />
             </View>
             <View style={styles.loginButton}>
               <Button
-                text={this.state.buttonText}
+                title={this.state.buttonText}
                 activeOpacity={1}
                 underlayColor="transparent"
                 onPress={this.submitLoginCredentials.bind(this)}
@@ -168,7 +169,7 @@ class AuthScreen extends Component {
                 loadingProps={{ size: 'small', color: 'white' }}
                 disabled={!email_valid && password.length < 8}
                 buttonStyle={{ height: 50, width: 250, elevation: 0, backgroundColor: SECOND_COLOR, borderWidth: 1, borderColor: 'white', borderRadius: 30 }}
-                textStyle={{ fontWeight: 'bold', color: 'white' }}
+                titleStyle={{ fontWeight: 'bold', color: 'white' }}
               />
             </View>
           </View>
@@ -202,6 +203,7 @@ const styles = {
   },
   loginButton: {
     flex: 1,
+    justifyContent: 'center'
   },
   switchView: {
     flex: 0.4,

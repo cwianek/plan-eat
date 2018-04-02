@@ -2,10 +2,15 @@ import React, { Component } from 'react'
 import { Text, Button, View, Animated, TouchableOpacity } from 'react-native';
 import AuthScreen from './auth-screen';
 import { connect } from 'react-redux';
+import Icon from 'react-native-vector-icons/Feather'
 import { bindActionCreators } from 'redux';
-import { signupUser, loginUser, restoreSession } from '../store/session/actions';
+import { loadUserProducts } from '../store/products/actions';
+import { signupUser, loginUser, restoreSession, logoutUser } from '../store/session/actions';
+import { Header } from 'react-native-elements'
+import LogoutButton from './dashboard/logout-button'
 
 import Tabs from './dashboard/tabs';
+import { SECOND_COLOR } from './colors';
 
 class PlanEat extends Component {
     constructor(props) {
@@ -14,14 +19,20 @@ class PlanEat extends Component {
     }
 
     componentDidMount() {
-        this.props.restoreSession()
+        this.props.restoreSession();
     }
 
     render() {
         if (this.props.user && this.props.user.token) {
             return (
                 <View style={{ flex: 1, width: '100%' }}>
-                    <Tabs />
+                    <Header
+                        leftComponent={{ icon: 'menu', color: 'white' }}
+                        centerComponent={{ text: 'PlanEat', style: { color: 'white', fontSize: 20, fontFamily: 'light' } }}
+                        rightComponent={<LogoutButton logoutUser={this.props.logoutUser} />}
+                        outerContainerStyles={{ height: 70, paddingTop: 20, backgroundColor: SECOND_COLOR }}
+                    />
+                    <Tabs loadUserProducts={this.props.loadUserProducts} />
                 </View>
             )
         } else {
@@ -36,7 +47,7 @@ const mapStateToProps = state => ({
 })
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ signupUser, loginUser, restoreSession }, dispatch);
+    return bindActionCreators({ signupUser, loginUser, logoutUser, restoreSession, loadUserProducts }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlanEat);
