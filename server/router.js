@@ -1,7 +1,6 @@
 const Authentication = require('./controllers/authentication');
 const Fatsecret = require('./controllers/fatsecret');
 const Products = require('./controllers/products');
-const Regression = require('./controllers/regression');
 
 const passportService = require('./services/passport');
 const passport = require('passport');
@@ -18,6 +17,5 @@ module.exports = function (app) {
     app.post('/product', Fatsecret.searchProducts);
     app.post('/addUserProduct', Products.addUserProduct);
     app.post('/removeUserProduct', Products.removeUserProduct);    
-    app.post('/userProducts', Products.getUserProducts);    
-    app.post('/regression', Regression.run);        
+    app.post('/userProducts', Products.getUserProducts);            
 }
