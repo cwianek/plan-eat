@@ -35,6 +35,46 @@ export const getRecipeDetails = (id) => {
     }
 }
 
+export const addUserRecipe = (recipe) => {
+    return (dispatch, getstate) => {
+        axios.post(`${ROOT_URL}/addUserRecipe`, {
+            recipe,
+            user: getstate().session.user
+        })
+            .then(function (response) {
+                dispatch(userRecipeAdded(recipe))
+            })
+            .catch(function (error) {
+                console.warn(error);
+            });
+    }
+}
+
+export const getUserRecipes = (params) => {
+    return (dispatch, getstate) => {
+        axios.post(`${ROOT_URL}/getUserRecipes`, {
+            params,
+            user: getstate().session.user
+        })
+            .then(function (response) {
+                dispatch(getUserRecipesSuccess(response.data))
+            })
+            .catch(function (error) {
+                console.warn(error);
+            });
+    }
+}
+
+const getUserRecipesSuccess = recipes => ({
+    type: types.GET_USER_RECIPES,
+    recipes
+})
+
+const userRecipeAdded = recipe => ({
+    type: types.ADD_USER_RECIPE,
+    recipe
+})
+
 const searchRecipesSuccess = recipes => ({
     type: types.SEARCH_RECIPES,
     recipes

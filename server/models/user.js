@@ -6,7 +6,8 @@ const product = require('./product').schema;
 const userSchema = new Schema({
     email: { type: String, unique: true, lowercase: true },
     password: String,
-    products: [product]
+    products: [product],
+    recipes: [new Schema({ any: {} },{strict: false})]
 });
 
 userSchema.pre('save', function (next) {

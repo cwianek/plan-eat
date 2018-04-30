@@ -30,7 +30,7 @@ class PlanEat extends Component {
                         leftComponent={{ icon: 'menu', color: 'white' }}
                         centerComponent={{ text: 'PlanEat', style: { color: 'white', fontSize: 20, fontFamily: 'light' } }}
                         rightComponent={<LogoutButton logoutUser={this.props.logoutUser} />}
-                        outerContainerStyles={{ height: 70, paddingTop: 20, backgroundColor: SECOND_COLOR }}
+                        outerContainerStyles={{ height: 65, paddingTop: 15, backgroundColor: SECOND_COLOR, borderBottomWidth: 0 }}
                     />
                     <Tabs loadUserProducts={this.props.loadUserProducts} />
                 </View>

@@ -1,15 +1,16 @@
 import React from 'react';
-import { Text, Image, View, ScrollView, Animated, ActivityIndicator } from 'react-native';
+import { Text, Image, View, ScrollView, ActivityIndicator } from 'react-native';
 import { Button, Input } from 'react-native-elements';
-import { RECIPE_ALT, SCREEN_WIDTH } from '../../dimensions';
+import { RECIPE_ALT, SCREEN_WIDTH, SCREEN_HEIGHT } from '../../dimensions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { getRecipeDetails } from '../../../store/recipes/actions'
+import { getRecipeDetails, addUserRecipe } from '../../../store/recipes/actions'
 import Modal from "react-native-modal";
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { TEXT_COLOR, SECOND_COLOR } from '../../colors'
 import TabNavigator from 'react-native-tab-navigator';
 import StarRating from 'react-native-star-rating';
+import Toast, { DURATION } from 'react-native-easy-toast';
 
 
 
@@ -70,16 +71,24 @@ class RecipeDetails extends React.Component {
                                     fullStarColor={SECOND_COLOR}
                                 />
                             </View>
-                            {
-                                recipe.cooking_time_min ?
-                                    <View style={styles.timeContainer}>
-                                        <Ionicons
-                                            name='ios-time-outline'
-                                            size={20} />
-                                        <Text style={styles.timeText}>{recipe.cooking_time_min}min</Text>
-                                    </View>
-                                    : null
-                            }
+                            <View style={styles.headerContainer}>
+                                <View style={styles.timeContainer}>
+                                    <Ionicons
+                                        name='ios-time-outline'
+                                        size={20} />
+                                    <Text style={styles.timeText}>{recipe.preparation_time_min ? recipe.preparation_time_min : recipe.cooking_time_min ? recipe.cooking_time_min : 30}min</Text>
+                                </View>
+                                <Button
+                                    clear
+                                    containerStyle={styles.addButtonContainer}
+                                    titleStyle={styles.addButtonTitle}
+                                    title={"add"}
+                                    onPress={() => {
+                                        this.props.addUserRecipe(this.props.recipe);
+                                        this.refs.toast.show('Recipe added to Your list');
+                                    }}>
+                                </Button>
+                            </View>
                         </View>
 
 
@@ -123,6 +132,15 @@ class RecipeDetails extends React.Component {
                             ))
                         }
                     </View>
+                    <Toast
+                        ref="toast"
+                        style={{ backgroundColor: SECOND_COLOR }}
+                        positionValue={SCREEN_HEIGHT-200}
+                        fadeInDuration={750}
+                        fadeOutDuration={1000}
+                        opacity={0.8}
+                        textStyle={{ color: 'white' }}
+                    />
                 </ScrollView>
             )
         } else {
@@ -136,7 +154,7 @@ class RecipeDetails extends React.Component {
 
 const styles = {
     wrapper: {
-
+        backgroundColor: 'white'
     },
     closeButton: {
         position: 'absolute',
@@ -192,7 +210,7 @@ const styles = {
         flexDirection: 'row',
         flexWrap: 'wrap',
         paddingLeft: 15,
-        marginBottom: 15,
+        marginBottom: 25,
     }, ingredient: {
         backgroundColor: '#DDDDDD',
         borderRadius: 5,
@@ -224,7 +242,6 @@ const styles = {
     showMore: {
         padding: 0,
         margin: 0,
-        backgroundColor: 'red'
     },
     starsContainer: {
         paddingLeft: 20,
@@ -235,12 +252,15 @@ const styles = {
         marginLeft: 2,
         paddingTop: 10,
     },
-    timeContainer: {
+    headerContainer: {
         paddingLeft: 20,
         paddingTop: 5,
         flexDirection: 'row',
-        width: 100,
-        paddingBottom: 20
+        justifyContent: 'space-between',
+        paddingBottom: 10
+    },
+    timeContainer: {
+        flexDirection: 'row',
     }, timeText: {
         fontFamily: 'light',
         marginLeft: 10
@@ -254,6 +274,22 @@ const styles = {
         color: TEXT_COLOR,
         fontFamily: 'light',
         fontWeight: 'normal'
+    }, addButtonContainer: {
+        top: -10,
+        position: 'relative',
+        marginRight: 30,
+        borderWidth: 2,
+        height: 40,
+        borderRadius: 5,
+        borderColor: SECOND_COLOR,
+        width: 100,
+        //backgroundColor: SECOND_COLOR
+    }, addButtonTitle: {
+        width: 100,
+        color: SECOND_COLOR,
+        //color: 'white',
+        fontFamily: 'light',
+        fontWeight: 'normal'
     }
 }
 
@@ -263,7 +299,7 @@ const mapStateToProps = state => ({
 })
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getRecipeDetails }, dispatch);
+    return bindActionCreators({ getRecipeDetails, addUserRecipe }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecipeDetails);

@@ -46,7 +46,7 @@ export default class RecipeList extends React.Component {
     }
 }
 
-styles = {
+const styles = {
     container: {
         backgroundColor: 'white',
         flexDirection: 'row',

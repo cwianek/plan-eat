@@ -12,7 +12,7 @@ import RecipesSearch from './recipes-search'
 class RecipesScreen extends Component {
     constructor(props) {
         super(props);
-        this.state = { scrollY: new Animated.Value(0), isModalVisible: false, recipe: null };
+        this.state = { isModalVisible: false, recipe: null };
     }
 
     static navigationOptions = {
@@ -28,11 +28,11 @@ class RecipesScreen extends Component {
             <View style={styles.container}>
                 <RecipesSearch
                     searchRecipes={this.props.searchRecipes} />
-                    < RecipeList
-                        recipePress={this.recipePress}
-                        recipesList={this.props.recipesList}
-                        recipeListLoading={this.props.recipeListLoading}
-                    />
+                < RecipeList
+                    recipePress={this.recipePress}
+                    recipesList={this.props.recipesList}
+                    recipeListLoading={this.props.recipeListLoading}
+                />
             </View>
 
         )

@@ -4,6 +4,7 @@ const initialState = {
     recipesList: [],
     currentRecipe: null,
     listLoading: null,
+    userRecipes: null,
 }
 
 const recipes = (state = initialState, action) => {
@@ -18,6 +19,10 @@ const recipes = (state = initialState, action) => {
             return { ...state, listLoading: true }
         case types.RECIPE_LIST_LOADED:
             return { ...state, listLoading: false }
+        case types.ADD_USER_RECIPE:
+            return { ...state}
+        case types.GET_USER_RECIPES:
+            return { ...state, userRecipes: action.recipes}
     }
     return state;
 }
