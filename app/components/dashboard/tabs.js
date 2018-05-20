@@ -20,6 +20,10 @@ class Tabs extends React.Component {
         this.props.loadUserProducts();
     }
 
+    tabChange = () => {
+        this.setState({ selected: 'recipes' });
+    }
+
     render() {
         return (
             <TabNavigator
@@ -72,7 +76,7 @@ class Tabs extends React.Component {
                         color={SECOND_COLOR}
                         size={19} />}
                     onPress={() => this.setState({ selected: 'user' })}>
-                    <ProfileNavigator />
+                    <ProfileNavigator screenProps={{ tabChange: this.tabChange }} />
                 </TabNavigator.Item>
             </TabNavigator >
         )

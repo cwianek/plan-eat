@@ -24,4 +24,5 @@ module.exports = function (app) {
     app.post('/getUserRecipes', Recipes.getUserRecipes);        
     app.post('/predict',Regression.predict);    
     app.post('/train',Regression.train);      
+    app.post('/askByImage',Recipes.askByImage);          
 }

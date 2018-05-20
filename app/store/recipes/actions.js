@@ -9,8 +9,7 @@ export const searchRecipes = (name) => {
             name
         })
             .then(function (response) {
-                console.log("Response searchSrecipes");
-                dispatch(searchRecipesSuccess(response.data));
+                dispatch(searchRecipesSuccess(response.data.recipes));
                 dispatch(recipeListLoaded())
             })
             .catch(function (error) {
@@ -65,6 +64,38 @@ export const getUserRecipes = (params) => {
     }
 }
 
+export const askByImage = (image, callback) => {
+    return (dispatch, getstate) => {
+        callback();        
+        dispatch(recipeListLoading());        
+        axios.post(`${ROOT_URL}/askByImage`, {
+            image,
+            user: getstate().session.user
+        })
+            .then(function (response) {
+                console.log(response.mydata)
+                dispatch(changeRecipeNameSuccess(response.data.recipeName))                
+                dispatch(askByImageSuccess(response.data.recipes))
+                dispatch(recipeListLoaded())                
+            })
+            .catch(function (error) {
+                console.warn(error);
+                dispatch(recipeListLoaded())                
+            });
+    }
+}
+
+export const changeRecipeName = (text) => {
+    return (dispatch) => {
+        dispatch(changeRecipeNameSuccess(text))
+    }
+}
+
+const changeRecipeNameSuccess = name => ({
+    type: types.CHANGE_RECIPE_NAME,
+    recipeName: name
+})
+
 const getUserRecipesSuccess = recipes => ({
     type: types.GET_USER_RECIPES,
     recipes
@@ -77,7 +108,7 @@ const userRecipeAdded = recipe => ({
 
 const searchRecipesSuccess = recipes => ({
     type: types.SEARCH_RECIPES,
-    recipes
+    recipes,
 })
 
 const getRecipeDetailsSuccess = recipe => ({
@@ -95,4 +126,9 @@ const recipeListLoading = () => ({
 
 const recipeListLoaded = () => ({
     type: types.RECIPE_LIST_LOADED
+})
+
+const askByImageSuccess = recipes => ({
+    type: types.ASK_BY_IMAGE,
+    recipes,
 })

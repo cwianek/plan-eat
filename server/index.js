@@ -11,7 +11,7 @@ mongoose.connect('mongodb://localhost/auth')
 
 //app setup
 app.use(morgan('combined'));
-app.use(bodyParser.json({ type: '*/*' }));
+app.use(bodyParser.json({ type: '*/*', limit: '10mb' }));
 router(app);
 
 //server setup

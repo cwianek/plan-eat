@@ -9,7 +9,7 @@ import { TEXT_COLOR, SECOND_COLOR } from '../../colors';
 class RecipesSearch extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { version: props.mini ? true : false, text: '' }
+        this.state = { version: props.mini ? true : false }
     }
 
     // debounce(fn, delay) {
@@ -24,13 +24,12 @@ class RecipesSearch extends React.Component {
     // }
 
     onChangeText = (text) => {
-        this.setState({text })
+        this.props.changeRecipeName(text);
     }
 
-    search = (text) => {
-        console.log(text);
-        if (text) {
-            this.props.searchRecipes(text);
+    search = () => {
+        if (this.props.recipeName) {
+            this.props.searchRecipes(this.props.recipeName);
         }
     }
 
@@ -39,13 +38,13 @@ class RecipesSearch extends React.Component {
         return (
             <View>
                 <SearchBar
-                    value={this.props.text}
+                    value={this.props.recipeName}
                     onChangeText={text => this.onChangeText(text)}
                     keyboardAppearance="light"
                     lightTheme
                     returnKeyType="search"
                     platform="android"
-                    onSubmitEditing={() => this.search(this.state.text)}
+                    onSubmitEditing={() => this.search()}
                     placeholder='Search recipe' />
             </View>
         )

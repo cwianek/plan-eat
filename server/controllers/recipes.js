@@ -1,7 +1,12 @@
 const User = require('../models/user');
 const dateformat = require('dateformat');
+const axios = require('axios');
+const request = require('request');
+const Fatsecret = require('./fatsecret');
 
-exports.addUserRecipe = function (req, res, next) {
+const NN_URL = "http://206.189.26.159:5000"
+
+function addUserRecipe(req, res, next) {
     const email = req.body.user.email;
     const recipe = req.body.recipe;
     User.findOne({ email: email }, function (err, user) {
@@ -14,13 +19,17 @@ exports.addUserRecipe = function (req, res, next) {
     });
 }
 
-exports.getUserRecipes = function (req, res, next) {
+function getUserRecipes(req, res, next) {
     const email = req.body.user.email;
     const params = req.body.params;
-    var start = new Date();
-    start.setHours(0, 0, 0, 0);
+    if (!params || !params.timestamp) {
+        var start = new Date();
+        start.setHours(0, 0, 0, 0);
+    } else {
+        start = new Date(params.timestamp)
+    }
+    var end = new Date(start.getTime());
 
-    var end = new Date();
     end.setHours(23, 59, 59, 999);
     User.aggregate([
         { "$match": { "email": email } },
@@ -30,7 +39,39 @@ exports.getUserRecipes = function (req, res, next) {
     ]).exec(function (err, user) {
         if (err) { return next(err); }
         const result = {};
-        result[dateformat(start,"yyyy-mm-dd")] = user[0].recipes;
+        if (user[0] && user[0].recipes) {
+            console.log(user[0].recipes[0].recipe_name);
+            result[dateformat(start, "yyyy-mm-dd")] = user[0].recipes;
+        }
         res.send(result);
     });
 }
+
+function askByImage(req, res, next) {
+    const image = req.body.image;
+    var decodedFile = new Buffer(image, 'base64');
+    var formData = {
+        image: {
+            value: decodedFile,
+            options: {
+                filename: 'image.jpg',
+                contentType: 'text/html'
+            }
+        }
+    }
+
+
+    request.post({ url: NN_URL + '/recognize', formData: formData },
+        function optionalCallback(err, response, body) {
+            console.log(response.body)
+            if (err) {
+                return console.error('upload failed:');
+            }
+            Fatsecret.search(response.body.replace('_', ' '), res, next);
+        });
+}
+
+
+exports.getUserRecipes = getUserRecipes;
+exports.askByImage = askByImage;
+exports.addUserRecipe = addUserRecipe;

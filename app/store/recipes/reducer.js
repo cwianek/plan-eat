@@ -5,10 +5,13 @@ const initialState = {
     currentRecipe: null,
     listLoading: null,
     userRecipes: null,
+    recipeName: ''
 }
 
 const recipes = (state = initialState, action) => {
     switch (action.type) {
+        case types.CHANGE_RECIPE_NAME:
+            return { ...state, recipeName: action.recipeName}
         case types.SEARCH_RECIPES:
             return { ...state, recipesList: action.recipes, currentRecipe: null }
         case types.GET_RECIPE_DETAILS:
@@ -23,6 +26,8 @@ const recipes = (state = initialState, action) => {
             return { ...state}
         case types.GET_USER_RECIPES:
             return { ...state, userRecipes: action.recipes}
+        case types.ASK_BY_IMAGE:
+            return { ...state, recipesList: action.recipes}
     }
     return state;
 }
