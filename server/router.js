@@ -21,7 +21,8 @@ module.exports = function (app) {
     app.post('/removeUserProduct', Products.removeUserProduct);    
     app.post('/userProducts', Products.getUserProducts);
     app.post('/addUserRecipe', Recipes.addUserRecipe);    
-    app.post('/getUserRecipes', Recipes.getUserRecipes);        
+    app.post('/getUserRecipes', Recipes.getUserRecipes);    
+    app.post('/getCurrentDayRecipes', Recipes.getCurrentDayRecipes);                
     app.post('/predict',Regression.predict);    
     app.post('/train',Regression.train);      
     app.post('/askByImage',Recipes.askByImage);          
