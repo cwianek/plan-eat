@@ -1,1 +1,2 @@
-export default ROOT_URL = 'http://192.168.1.102:3090';
+export default ROOT_URL = "http://192.168.43.195:3090";
+//set REACT_NATIVE_PACKAGER_HOSTNAME

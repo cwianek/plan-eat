@@ -5,7 +5,9 @@ const initialState = {
     currentRecipe: null,
     listLoading: null,
     userRecipes: null,
-    recipeName: ''
+    currentDayRecipes: [],
+    recipeName: '',
+    currentDayCalories: 0
 }
 
 const recipes = (state = initialState, action) => {
@@ -23,11 +25,15 @@ const recipes = (state = initialState, action) => {
         case types.RECIPE_LIST_LOADED:
             return { ...state, listLoading: false }
         case types.ADD_USER_RECIPE:
-            return { ...state}
+            return { ...state, currentDayRecipes: [...state.currentDayRecipes, action.recipe]}
         case types.GET_USER_RECIPES:
             return { ...state, userRecipes: action.recipes}
         case types.ASK_BY_IMAGE:
             return { ...state, recipesList: action.recipes}
+        case types.GET_CURRENT_DAY_RECIPES:
+            return { ...state, currentDayRecipes: action.recipes}
+        case types.CURRENT_DAY_CALORIES:
+            return { ... state, currentDayCalories: action.calories}
     }
     return state;
 }

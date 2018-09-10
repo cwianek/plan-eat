@@ -6,6 +6,7 @@ import { SECOND_COLOR, TEXT_COLOR, PROGRESS_COLOR } from '../../colors';
 import { ProgressCircle } from 'react-native-svg-charts';
 import { Button, List, ListItem } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome'
+import { getCurrentDayRecipes, askByImage } from '../../../store/recipes/actions'
 
 
 class Profile extends React.Component {
@@ -19,12 +20,22 @@ class Profile extends React.Component {
         header: null,
     }
 
+    componentDidMount() {
+        this.props.getCurrentDayRecipes();
+    }
+
     showRecipes = () => {
         this.props.navigation.navigate('History', {})
     }
 
+    itemPressed = (i) => {
+        if(i == 0){
+            this.props.navigation.navigate('UserLimits',{})
+        }
+    }
+
     render() {
-        const percents = this.state.current / this.state.dailyLimit;
+        const percents = this.props.currentDayCalories / this.state.dailyLimit;
         return (
             <ScrollView contentContainerStyle={styles.container}>
                 <Text style={styles.sectionTtitle}>Daily goal</Text>
@@ -36,8 +47,8 @@ class Profile extends React.Component {
                 />
                 <View style={styles.textContainer}>
                     <View style={styles.insideText}>
-                        <Text style={styles.percents}>{percents * 100}%</Text>
-                        <Text style={styles.progressText}>{this.state.current} kcal of {this.state.dailyLimit} kcal</Text>
+                        <Text numberOfLines={1} style={styles.percents}>{percents * 100}%</Text>
+                        <Text style={styles.progressText}>{this.props.currentDayCalories} kcal of {this.state.dailyLimit} kcal</Text>
                     </View>
                 </View>
                 <Button
@@ -52,6 +63,7 @@ class Profile extends React.Component {
                     {
                         ['Your limits', 'Settings'].map((l, i) => (
                             <ListItem
+                                onPress={() => this.itemPressed(i)}
                                 key={i}
                                 title={l}
                                 containerStyle={{ borderBottomWidth: 0, marginRight: 15 }}
@@ -79,19 +91,23 @@ styles = {
         position: 'relative',
         top: 140,
         left: '-50%',
-        width: 150,
-        justifyContent: 'center'
+        width: 160,
+        height: 100,
+        justifyContent: 'center',
+        whiteSpace: 'nowrap'
     },
     progressText: {
+        textAlign: 'center',
+        top: 20,
         fontSize: 12,
         fontFamily: 'light',
         color: TEXT_COLOR,
     },
     percents: {
         fontFamily: 'light',
-        fontSize: 50,
+        fontSize: 40,
         color: PROGRESS_COLOR,
-        textAlign: 'center'
+        textAlign: 'center',
     },
     dailyRecipesButton: {
         marginTop: 20,
@@ -110,10 +126,12 @@ styles = {
 }
 
 const mapStateToProps = state => ({
+    currentDayRecipes: state.recipes.currentDayRecipes,
+    currentDayCalories: state.recipes.currentDayCalories
 })
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({}, dispatch);
+    return bindActionCreators({ getCurrentDayRecipes }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

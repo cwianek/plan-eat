@@ -42,6 +42,7 @@ export const addUserRecipe = (recipe) => {
         })
             .then(function (response) {
                 dispatch(userRecipeAdded(recipe))
+                dispatch(calculateCurrentDayCalories());
             })
             .catch(function (error) {
                 console.warn(error);
@@ -64,24 +65,47 @@ export const getUserRecipes = (params) => {
     }
 }
 
+export const getCurrentDayRecipes = () => {
+    return (dispatch, getstate) => {
+        axios.post(`${ROOT_URL}/getCurrentDayRecipes`, {
+            user: getstate().session.user
+        })
+            .then(function (response) {
+                dispatch(getCurrentDayRecipesSuccess(response.data))
+                dispatch(calculateCurrentDayCalories());
+            })
+            .catch(function (error) {
+                console.warn(error);
+            });
+    }
+}
+
 export const askByImage = (image, callback) => {
     return (dispatch, getstate) => {
-        callback();        
-        dispatch(recipeListLoading());        
+        callback();
+        dispatch(recipeListLoading());
         axios.post(`${ROOT_URL}/askByImage`, {
             image,
             user: getstate().session.user
         })
             .then(function (response) {
                 console.log(response.mydata)
-                dispatch(changeRecipeNameSuccess(response.data.recipeName))                
+                dispatch(changeRecipeNameSuccess(response.data.recipeName))
                 dispatch(askByImageSuccess(response.data.recipes))
-                dispatch(recipeListLoaded())                
+                dispatch(recipeListLoaded())
             })
             .catch(function (error) {
                 console.warn(error);
-                dispatch(recipeListLoaded())                
+                dispatch(recipeListLoaded())
             });
+    }
+}
+
+export const calculateCurrentDayCalories = () => {
+    return (dispatch, getstate) => {
+        const recipes = getstate().recipes.currentDayRecipes;
+        const sum = recipes.reduce((total, recipe) => total + parseInt(recipe.serving_sizes.serving.calories),0);
+        dispatch(changeCurrentDayCalories(sum));
     }
 }
 
@@ -131,4 +155,14 @@ const recipeListLoaded = () => ({
 const askByImageSuccess = recipes => ({
     type: types.ASK_BY_IMAGE,
     recipes,
+})
+
+const getCurrentDayRecipesSuccess = recipes => ({
+    type: types.GET_CURRENT_DAY_RECIPES,
+    recipes
+})
+
+const changeCurrentDayCalories = calories => ({
+    type: types.CURRENT_DAY_CALORIES,
+    calories
 })

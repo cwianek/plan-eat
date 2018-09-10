@@ -32,6 +32,7 @@ export const logoutUser = () => {
 
 export const loginUser = (email, password) => {
     return (dispatch) => {
+        console.log(email, password)
         dispatch(sessionLoading())
         axios.post(`${ROOT_URL}/signin`, {
             email,

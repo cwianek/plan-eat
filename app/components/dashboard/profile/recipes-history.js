@@ -21,8 +21,8 @@ class RecipesHistory extends React.Component {
         }
     }
 
-    componentDidMount() {
-        this.props.getUserRecipes()
+    componentWillMount = () => {
+        this.props.getUserRecipes();
     }
 
     static navigationOptions = ({ navigation }) => ({
@@ -194,7 +194,9 @@ class RecipesHistory extends React.Component {
                         </ActionButton>
                     </View>
                     :
-                    <View style={{ flex: 1 }}><Text>Loading</Text></View>
+                    <View style={{ flex: 1, justifyContent: 'center' }}>
+                        <ActivityIndicator size="large" color={SECOND_COLOR} />
+                    </View>
         )
     }
 }
